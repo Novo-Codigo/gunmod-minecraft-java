@@ -5,18 +5,18 @@
 modLoader="javafml"
 loaderVersion="[61,)"
 license="All Rights Reserved"
-#issueTrackerURL="https://github.com/MyOrganization/MyMod/" #optional
-#clientSideOnly=true #optional, default=false
+#issueTrackerURL="https://github.com/MyOrganization/MyMod/"
+#clientSideOnly=true , default=false
 
 [[mods]]
 modId="gunmod"
 version="1.0.0"
 displayName="Gun Mod"
-#updateJSONURL="https://example.com/updates.json" #optional
-#displayURL="https://example.com/" #optional
-#logoFile="examplemod.png" #optional
-#credits="" #optional
-authors="Krauss" #optional
+#updateJSONURL="https://example.com/updates.json"
+#displayURL="https://example.com/"
+#logoFile="examplemod.png"
+credits="Krauss"
+authors="Novo Codigo"
 #displayTest="MATCH_VERSION" #optional, default=MATCH_VERSION when not clientSideOnly, else IGNORE_ALL_VERSION
 
 description='''A simple gun mod.'''
