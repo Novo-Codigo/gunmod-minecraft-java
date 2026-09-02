@@ -9,29 +9,28 @@ license="All Rights Reserved"
 #clientSideOnly=true #optional, default=false
 
 [[mods]]
-modId="examplemod"
+modId="gunmod"
 version="1.0.0"
-displayName="Example Mod"
+displayName="Gun Mod"
 #updateJSONURL="https://example.com/updates.json" #optional
 #displayURL="https://example.com/" #optional
 #logoFile="examplemod.png" #optional
 #credits="" #optional
-authors="YourNameHere, OtherNameHere" #optional
+authors="Krauss" #optional
 #displayTest="MATCH_VERSION" #optional, default=MATCH_VERSION when not clientSideOnly, else IGNORE_ALL_VERSION
 
-description='''Example mod description.
-Newline characters can be used like this, and rendered on the mods screen properly.'''
+description='''A simple gun mod.'''
 
-[[dependencies.examplemod]] #recommended
+[[dependencies.gunmod]] #recommended
     modId="forge"
     mandatory=true
     versionRange="[61,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.examplemod]] #recommended
+[[dependencies.gunmod]] #recommended
     modId="minecraft"
     mandatory=true
-    versionRange="[1.21.11,1.22,)"
+    versionRange="[1.21.11]"
     ordering="NONE"
     side="BOTH"
