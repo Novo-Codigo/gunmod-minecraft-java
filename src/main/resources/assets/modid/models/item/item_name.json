@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/type",
+  "textures": {
+    "layer0": "modid:item/texture_name"
+  }
+}
