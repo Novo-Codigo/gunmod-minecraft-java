@@ -12,6 +12,7 @@ public class ModTags {
     public static final class Items {
         private Items() {}
 
+        public static final TagKey<Item> AMMO_762 = tag("ammo_762");
         public static final TagKey<Item> ACCEPTS_762_AMMO = tag("accepts_762_ammo");
         public static final TagKey<Item> AMMUNITION = tag("ammunition");
 

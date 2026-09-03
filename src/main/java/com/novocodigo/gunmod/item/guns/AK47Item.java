@@ -1,5 +1,6 @@
 package com.novocodigo.gunmod.item.guns;
 
+import com.novocodigo.gunmod.core.ModTags;
 import com.novocodigo.gunmod.item.GunItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,7 +16,8 @@ public class AK47Item extends GunItem {
         this(properties, new GunProperties()
                 .cooldownSeconds(0.3f)
                 .damage(10.0f)
-                .range(48.0));
+                .range(48.0)
+                .requiredAmmo(ModTags.Items.AMMO_762));
     }
 
     public AK47Item(Item.Properties properties, GunProperties gunProps) {
