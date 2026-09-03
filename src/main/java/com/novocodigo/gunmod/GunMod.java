@@ -18,8 +18,11 @@ public class GunMod {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+        var tabKey = event.getTabKey();
+
+        if (tabKey == CreativeModeTabs.COMBAT) {
             event.accept(ItemInit.AK47);
+            event.accept(ItemInit.AMMO762);
         }
     }
 }
