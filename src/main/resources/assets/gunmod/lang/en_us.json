@@ -1,4 +1,6 @@
 {
   "item.gunmod.ak47": "AK-47 Assault Rifle",
-  "item.gunmod.ammo762": "7.62 Ammo"
+  "item.gunmod.ammo762": "7.62 Ammo",
+  "key.categories.gunmod": "Gun Mod",
+  "key.gunmod.reload": "Reload Weapon"
 }
