@@ -2,9 +2,9 @@ package com.novocodigo.gunmod.client;
 
 import com.novocodigo.gunmod.GunMod;
 import com.novocodigo.gunmod.item.GunItem;
+import com.novocodigo.gunmod.network.Networking;
 import com.novocodigo.gunmod.network.ReloadPayload;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
@@ -24,9 +24,7 @@ public final class ClientInputHandler {
 
         if (KeyMappings.REALOAD_KEY.consumeClick()) {
             if (mine.player.getMainHandItem().getItem() instanceof GunItem) {
-                ServerboundCustomPayloadPacket packet = new ServerboundCustomPayloadPacket(new ReloadPayload());
-
-                PacketDistributor.SERVER.noArg().send(packet);
+                Networking.CHANNEL.send(new ReloadPayload(), PacketDistributor.SERVER.noArg());
             }
         }
     }
