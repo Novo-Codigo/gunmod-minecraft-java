@@ -14,10 +14,10 @@ public class GunMod {
     public static final String MOD_ID = "gunmod";
 
     public GunMod(FMLJavaModLoadingContext context) {
-        Networking.register();
         BusGroup modBusGroup = context.getModBusGroup();
         ModDataComponents.DATA_COMPONENT_TYPES.register(modBusGroup);
         ItemInit.ITEMS.register(modBusGroup);
+        Networking.register();
 
         BuildCreativeModeTabContentsEvent.BUS.addListener(this::addCreative);
     }
