@@ -1,6 +1,8 @@
 package com.novocodigo.gunmod.item;
 
+import com.novocodigo.gunmod.GunMod;
 import com.novocodigo.gunmod.registry.ModDataComponents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -16,6 +18,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unused")
 @NullMarked
 public abstract class GunItem extends Item {
     public static class GunProperties {
@@ -23,6 +26,9 @@ public abstract class GunItem extends Item {
         private float baseDamage = 8.0f;
         private double range = 64.0;
         private int maxAmmo = 20;
+        private Identifier crosshairTexture = Identifier.fromNamespaceAndPath(
+                GunMod.MOD_ID, "textures/gui/crosshair_default.png"
+        );
         private TagKey<Item> requiredAmmoTag;
 
         public GunProperties cooldownTicks(int ticks) {
@@ -50,6 +56,11 @@ public abstract class GunItem extends Item {
             return this;
         }
 
+        public GunProperties crosshair(Identifier texture) {
+            this.crosshairTexture = texture;
+            return this;
+        }
+
         public GunProperties requiredAmmo(TagKey<Item> ammoTag) {
             this.requiredAmmoTag = Objects.requireNonNull(ammoTag, "Ammunition tag cannot be null.");
             return this;
@@ -60,6 +71,7 @@ public abstract class GunItem extends Item {
     protected final float baseDamage;
     protected final double range;
     protected final int maxAmmo;
+    protected final Identifier crosshairTexture;
     protected final TagKey<Item> requiredAmmoTag;
 
     public GunItem(Item.Properties properties, GunProperties gunProps) {
@@ -68,7 +80,12 @@ public abstract class GunItem extends Item {
         this.baseDamage = gunProps.baseDamage;
         this.range = gunProps.range;
         this.maxAmmo = gunProps.maxAmmo;
+        this.crosshairTexture = gunProps.crosshairTexture;
         this.requiredAmmoTag = gunProps.requiredAmmoTag;
+    }
+
+    public Identifier getCrosshairTexture() {
+        return this.crosshairTexture;
     }
 
     public int getAmmo(ItemStack stack) {
