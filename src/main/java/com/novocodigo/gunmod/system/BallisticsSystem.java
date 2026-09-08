@@ -33,12 +33,24 @@ public final class BallisticsSystem {
                 shooter
         ));
 
+        boolean hitBlock = blockHit.getType() == HitResult.Type.BLOCK;
         Vec3 actualEndPos = blockHit.getType() != HitResult.Type.MISS ? blockHit.getLocation() : theoreticalEndPos;
         double actualDistance = startPos.distanceTo(actualEndPos);
+
+        if (actualDistance < 0.05) {
+            if (hitBlock) spawnImpactParticles(level, actualEndPos);
+
+            return;
+        }
 
         AABB trajectoryBox = new AABB(startPos, actualEndPos).inflate(1.0);
         List<Entity> potentialTargets = level.getEntities(shooter, trajectoryBox,
                 e -> e instanceof LivingEntity && e.isPickable() && e.isAlive());
+
+        if (potentialTargets.isEmpty()) {
+            if (hitBlock) spawnImpactParticles(level, actualEndPos);
+            return;
+        }
 
         final double dirX = lookVec.x;
         final double dirY = lookVec.y;
@@ -65,12 +77,12 @@ public final class BallisticsSystem {
                 nextZ = actualEndPos.z;
             }
 
-            double minX = (currX < nextX ? currX : nextX) - HITBOX_INFLATION;
-            double minY = (currY < nextY ? currY : nextY) - HITBOX_INFLATION;
-            double minZ = (currZ < nextZ ? currZ : nextZ) - HITBOX_INFLATION;
-            double maxX = (currX > nextX ? currX : nextX) + HITBOX_INFLATION;
-            double maxY = (currY > nextY ? currY : nextY) + HITBOX_INFLATION;
-            double maxZ = (currZ > nextZ ? currZ : nextZ) + HITBOX_INFLATION;
+            double minX = (Math.min(currX, nextX)) - HITBOX_INFLATION;
+            double minY = (Math.min(currY, nextY)) - HITBOX_INFLATION;
+            double minZ = (Math.min(currZ, nextZ)) - HITBOX_INFLATION;
+            double maxX = (Math.max(currX, nextX)) + HITBOX_INFLATION;
+            double maxY = (Math.max(currY, nextY)) + HITBOX_INFLATION;
+            double maxZ = (Math.max(currZ, nextZ)) + HITBOX_INFLATION;
 
             for (Entity target : potentialTargets) {
                 AABB targetBox = target.getBoundingBox();
@@ -97,7 +109,7 @@ public final class BallisticsSystem {
             distanceCovered += STEP_SIZE;
         }
 
-        if (blockHit.getType() == HitResult.Type.BLOCK) spawnImpactParticles(level, actualEndPos);
+        if (hitBlock) spawnImpactParticles(level, actualEndPos);
     }
 
     private static void spawnImpactParticles(ServerLevel level, Vec3 pos) {
