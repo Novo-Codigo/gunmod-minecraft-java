@@ -2,6 +2,9 @@ package com.novocodigo.gunmod.item.guns;
 
 import com.novocodigo.gunmod.core.ModTags;
 import com.novocodigo.gunmod.item.GunItem;
+import com.novocodigo.gunmod.system.BallisticsSystem;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +40,6 @@ public class AK47Item extends GunItem {
                 1.8f
         );
 
-        // Raycasting
+        if (level instanceof ServerLevel serverLevel && shooter instanceof ServerPlayer serverPlayer) BallisticsSystem.executeHitscan(serverLevel, serverPlayer, this.range, this.baseDamage);
     }
 }
