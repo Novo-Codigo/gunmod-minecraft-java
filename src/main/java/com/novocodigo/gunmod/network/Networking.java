@@ -1,6 +1,7 @@
 package com.novocodigo.gunmod.network;
 
 import com.novocodigo.gunmod.GunMod;
+import com.novocodigo.gunmod.client.BulletImpactClientHandler;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.Identifier;
 import net.minecraftforge.network.ChannelBuilder;
@@ -20,7 +21,9 @@ public final class Networking {
     public static void register() {
         CHANNEL.protocol(NetworkProtocol.PLAY)
                 .flow(PacketFlow.SERVERBOUND)
-                .addMain(ReloadPayload.class, ReloadPayload.STREAM_CODEC, ReloadServerHandler::handle)
+                    .addMain(ReloadPayload.class, ReloadPayload.STREAM_CODEC, ReloadServerHandler::handle)
+                .flow(PacketFlow.CLIENTBOUND)
+                    .addMain(BulletImpactPayload.class, BulletImpactPayload.STREAM_CODEC, BulletImpactClientHandler::handle)
                 .build();
     }
 }

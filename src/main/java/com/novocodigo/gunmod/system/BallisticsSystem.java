@@ -1,16 +1,20 @@
 package com.novocodigo.gunmod.system;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.novocodigo.gunmod.network.BulletImpactPayload;
+import com.novocodigo.gunmod.network.Networking;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.PacketDistributor;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +22,8 @@ import java.util.Optional;
 public final class BallisticsSystem {
     private static final double STEP_SIZE = 0.5;
     private static final double HITBOX_INFLATION = 0.15;
+    private static final double VISUAL_RADIUS = 64.0;
+    private static final double VISUAL_RADIUS_SQ = VISUAL_RADIUS * VISUAL_RADIUS;
 
     private BallisticsSystem() {}
 
@@ -33,13 +39,13 @@ public final class BallisticsSystem {
                 shooter
         ));
 
+        int stateId = Block.getId(level.getBlockState(blockHit.getBlockPos()));
         boolean hitBlock = blockHit.getType() == HitResult.Type.BLOCK;
         Vec3 actualEndPos = blockHit.getType() != HitResult.Type.MISS ? blockHit.getLocation() : theoreticalEndPos;
         double actualDistance = startPos.distanceTo(actualEndPos);
 
         if (actualDistance < 0.05) {
-            if (hitBlock) spawnImpactParticles(level, actualEndPos);
-
+            if (hitBlock) notifyClientImpact(level, actualEndPos, stateId);
             return;
         }
 
@@ -48,9 +54,11 @@ public final class BallisticsSystem {
                 e -> e instanceof LivingEntity && e.isPickable() && e.isAlive());
 
         if (potentialTargets.isEmpty()) {
-            if (hitBlock) spawnImpactParticles(level, actualEndPos);
+            if (hitBlock) notifyClientImpact(level, actualEndPos, stateId);
             return;
         }
+
+        if (potentialTargets.size() > 1) potentialTargets.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(startPos)));
 
         final double dirX = lookVec.x;
         final double dirY = lookVec.y;
@@ -97,7 +105,7 @@ public final class BallisticsSystem {
 
                     if (hitPos.isPresent()) {
                         target.hurtServer(level, level.damageSources().playerAttack(shooter), damage);
-                        spawnImpactParticles(level, hitPos.get());
+                        notifyClientImpact(level, hitPos.get(), -1);
                         return;
                     }
                 }
@@ -109,12 +117,18 @@ public final class BallisticsSystem {
             distanceCovered += STEP_SIZE;
         }
 
-        if (hitBlock) spawnImpactParticles(level, actualEndPos);
+        if (hitBlock) notifyClientImpact(level, actualEndPos, stateId);
     }
 
-    private static void spawnImpactParticles(ServerLevel level, Vec3 pos) {
-        level.sendParticles(ParticleTypes.CRIT,
-                pos.x, pos.y, pos.z,
-                5, 0.1, 0.1, 0.1, 0.05);
+    private static void notifyClientImpact(ServerLevel level, Vec3 pos, int blockStateId) {
+        Networking.CHANNEL.send(
+                new BulletImpactPayload(pos.x, pos.y, pos.z, blockStateId),
+                PacketDistributor.NEAR.with(new PacketDistributor.TargetPoint(
+                        null,
+                        pos.x, pos.y, pos.z,
+                        VISUAL_RADIUS_SQ,
+                        level.dimension()
+                ))
+        );
     }
 }
